@@ -45,7 +45,24 @@ MAIN : {
         my ($id2, $flag2, $chr_from2, $loc_from2, $mapq2, $cigar2, $d1_2, $d2_2, $d3_2, $read2, $read_qual2, @rest2) = split(/\t/, $line2);
 
         if ($id1 ne $id2){
-            die ("The read id's of the two files do not match up at line number $counter. Files should be from the same sample and sorted in identical order.\n");
+              while($id1 ne $id2){
+                        my @temparray;
+                        push (@temparray, $id1);
+                        push (@temparray, $id2);
+                        @temparray = sort @temparray;
+                        if($temparray[0] =~ /$id1/){
+                                $line1 = <FILE1>;
+                                chomp $line1;
+                                ($id1, $flag1, $chr_from1, $loc_from1, $mapq1, $cigar1, $d1_1, $d2_1, $d3_1, $read1, $read_qual1, @rest1) = split(/\t/, $line1);
+                        }
+                        elsif($temparray[0] =~ /$id2/){
+                                $line2 = <FILE2>;
+                                chomp $line2;
+                                ($id2, $flag2, $chr_from2, $loc_from2, $mapq2, $cigar2, $d1_2, $d2_2, $d3_2, $read2, $read_qual2, @rest2) = split(/\t/, $line2);
+                        }
+                }
+                print "Fixed at $id1 and $id2\n";
+	    #die ("The read id's of the two files do not match up at line number $counter. Files should be from the same sample and sorted in identical order.\n");
         }
 
         my $bin1 = reverse(dec2bin($flag1));
